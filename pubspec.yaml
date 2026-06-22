@@ -1,0 +1,33 @@
+name: nosmai_livekit_bridge
+description: "Easy integration of Nosmai filters with LiveKit for Flutter. Apply real-time beauty filters to a LiveKit camera track without writing native code."
+version: 0.0.1
+homepage: https://github.com/nosmai/nosmai_livekit_bridge
+
+environment:
+  sdk: ^3.5.0
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.0.2
+
+  # The bridge attaches a frame processor to a flutter_webrtc LocalVideoTrack.
+  # livekit_client pulls in flutter_webrtc, but we depend on it directly so the
+  # Android plugin can compile against com.cloudwebrtc.webrtc.* classes.
+  flutter_webrtc: ^1.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+# The following section is specific to Flutter packages.
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.nosmai_livekit_bridge
+        pluginClass: NosmaiLiveKitBridgePlugin
+      ios:
+        pluginClass: NosmaiLiveKitBridgePlugin
