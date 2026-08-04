@@ -1,0 +1,38 @@
+name: nosmai_livekit_bridge_example
+description: "Demonstrates how to use the nosmai_livekit_bridge plugin."
+publish_to: 'none'
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  nosmai_livekit_bridge:
+    path: ../
+
+  # Owns the Room and publishing. The app connects and publishes; the bridge
+  # supplies the track carrying Nosmai's filtered output.
+  livekit_client: ^2.6.4
+
+  # Owns the camera and the on-screen preview; the bridge publishes its output.
+  nosmai_camera_sdk: ^3.0.6
+
+  permission_handler: ^11.3.1
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Add your own Nosmai effect packages here, e.g.
+  #   assets:
+  #     - assets/nosmai_filters/my_effect/
+

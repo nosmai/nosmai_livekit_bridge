@@ -1,3 +1,34 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.example.nosmai_livekit_bridge">
+
+  <!--
+    OpenCL access for the Nosmai SDK's GPU-accelerated ML path.
+
+    From Android 12 (API 31) onward an app may only dlopen a native library that
+    is BOTH listed in the vendor's public.libraries.txt AND declared here with
+    <uses-native-library>. Without the declaration the linker denies the dlopen
+    and the SDK silently falls back to the CPU path — slower, with no error
+    surfaced anywhere obvious.
+
+    Vendors split these:
+      Qualcomm / most  -> libOpenCL.so
+      Pixel            -> ONLY libOpenCL-pixel.so is public
+      Automotive       -> libOpenCL-car.so
+
+    android:required="false" on every entry is essential: a device ships just one
+    of these, so a missing library must not block installation.
+
+    Declared in the PLUGIN manifest rather than the example app so it merges into
+    any host automatically. Manifest merging unions these entries, so a host that
+    also declares them is unaffected.
+
+    NOTE: these MUST sit inside <application>, not directly under <manifest> —
+    aapt rejects the latter outright.
+  -->
+  <application>
+    <uses-native-library android:name="libOpenCL.so" android:required="false" />
+    <uses-native-library android:name="libOpenCL-pixel.so" android:required="false" />
+    <uses-native-library android:name="libOpenCL-car.so" android:required="false" />
+  </application>
+
 </manifest>

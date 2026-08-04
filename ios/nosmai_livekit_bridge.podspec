@@ -22,7 +22,7 @@ Apply real-time beauty filters to a LiveKit camera track without writing native 
   # and (transitively) the WebRTC-SDK pod whose <WebRTC/*.h> headers RTCFrameHelper uses.
   s.dependency 'flutter_webrtc'
 
-  s.platform = :ios, '13.0'
+  s.platform = :ios, '15.0'
   s.swift_version = '5.0'
 
   # Flutter.framework does not contain a i386 slice.

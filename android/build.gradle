@@ -57,8 +57,27 @@ android {
         // package's pub dependency). compileOnly so we don't bundle a second copy.
         compileOnly(project(":flutter_webrtc"))
 
-        // NOTE: the Nosmai SDK is reached purely via reflection (see NosmaiReflection),
-        // so there is NO compile-time Nosmai dependency and no AAR is bundled here.
-        // The actual classes are loaded at runtime by the nosmai_camera_sdk plugin.
+        // Nosmai classes, compileOnly — provided at runtime by the host app's own
+        // copy of the AAR (nosmai_camera_sdk requires the host to bundle it).
+        //
+        // Reflection is NOT sufficient for the frame callback: FrameCallback is a
+        // Java interface invoked from native via CallVoidMethodV, and a
+        // java.lang.reflect.Proxy declares Object as its return type, so ART
+        // aborts the process with
+        //   "JNI DETECTED ERROR: the return type of CallVoidMethodV does not
+        //    match void ...onFrameProcessed(...)".
+        // Implementing the interface for real is the only safe way to receive it.
+        // Resolved from the host app's libs/ via the flatDir repository below —
+        // the same pattern camsdk_v2 uses (camsdk_v2/android/build.gradle:94).
+        compileOnly(name: 'nosmai-release', ext: 'aar')
+    }
+}
+
+repositories {
+    // Resolves the compileOnly nosmai-release AAR from the HOST app's libs/.
+    // The plugin never bundles the 36MB binary itself; the host must supply it
+    // (and already does, since nosmai_camera_sdk requires the same file).
+    flatDir {
+        dirs "${rootProject.projectDir}/app/libs"
     }
 }
