@@ -1,0 +1,37 @@
+name: nosmai_livekit_bridge
+description: "Publish a Nosmai-filtered camera feed to LiveKit from Flutter. Zero-copy on Android and iOS — real-time AR effects and beauty at full frame rate."
+version: 0.1.0
+homepage: https://github.com/nosmai/nosmai_livekit_bridge
+
+environment:
+  sdk: ^3.5.0
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.0.2
+
+  # The bridge mints a native WebRTC track and registers it with flutter_webrtc,
+  # so it needs the same WebRTC build the host uses. Pinned to the version
+  # livekit_client pins, so both resolve to one copy.
+  flutter_webrtc: 1.6.0
+
+  # createVideoTrack returns a ready-to-publish LocalVideoTrack, which keeps the
+  # wrapping plumbing inside the plugin instead of in every consumer's app code.
+  livekit_client: ^2.6.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+# The following section is specific to Flutter packages.
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.nosmai_livekit_bridge
+        pluginClass: NosmaiLiveKitBridgePlugin
+      ios:
+        pluginClass: NosmaiLiveKitBridgePlugin

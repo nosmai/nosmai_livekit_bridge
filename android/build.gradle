@@ -1,0 +1,83 @@
+group = "com.example.nosmai_livekit_bridge"
+version = "1.0-SNAPSHOT"
+
+buildscript {
+    ext.kotlin_version = "2.1.0"
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.9.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+android {
+    namespace = "com.example.nosmai_livekit_bridge"
+
+    compileSdk = 36
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+    }
+
+    defaultConfig {
+        // Camera2 full support + LiveKit requirement.
+        minSdk = 24
+    }
+
+    dependencies {
+        // org.webrtc.* (VideoFrame, JavaI420Buffer, ...). flutter_webrtc bundles the
+        // same WebRTC build at runtime, so this is compileOnly to avoid duplicate classes.
+        compileOnly("io.github.webrtc-sdk:android:144.7559.01")
+
+        // com.cloudwebrtc.webrtc.* (FlutterWebRTCPlugin, LocalVideoTrack). Provided at
+        // runtime by the flutter_webrtc plugin (pulled in by livekit_client + this
+        // package's pub dependency). compileOnly so we don't bundle a second copy.
+        compileOnly(project(":flutter_webrtc"))
+
+        // Nosmai classes, compileOnly — provided at runtime by the host app's own
+        // copy of the AAR (nosmai_camera_sdk requires the host to bundle it).
+        //
+        // Reflection is NOT sufficient for the frame callback: FrameCallback is a
+        // Java interface invoked from native via CallVoidMethodV, and a
+        // java.lang.reflect.Proxy declares Object as its return type, so ART
+        // aborts the process with
+        //   "JNI DETECTED ERROR: the return type of CallVoidMethodV does not
+        //    match void ...onFrameProcessed(...)".
+        // Implementing the interface for real is the only safe way to receive it.
+        // Resolved from the host app's libs/ via the flatDir repository below —
+        // the same pattern camsdk_v2 uses (camsdk_v2/android/build.gradle:94).
+        compileOnly(name: 'nosmai-release', ext: 'aar')
+    }
+}
+
+repositories {
+    // Resolves the compileOnly nosmai-release AAR from the HOST app's libs/.
+    // The plugin never bundles the 36MB binary itself; the host must supply it
+    // (and already does, since nosmai_camera_sdk requires the same file).
+    flatDir {
+        dirs "${rootProject.projectDir}/app/libs"
+    }
+}
