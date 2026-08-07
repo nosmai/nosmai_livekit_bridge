@@ -50,7 +50,15 @@ dependencies:
 ### Android
 
 The Nosmai SDK ships as an AAR that the **host app** must bundle (the plugin declares it
-`compileOnly`, so it isn't duplicated):
+`compileOnly`, so it isn't duplicated).
+
+Download the latest `nosmai-release.aar` from the releases page and drop it in:
+
+**https://github.com/nosmai/camera-sdk-android/releases**
+
+```
+android/app/libs/nosmai-release.aar
+```
 
 ```kotlin
 // android/app/build.gradle.kts
@@ -58,6 +66,10 @@ dependencies {
     implementation(files("libs/nosmai-release.aar"))
 }
 ```
+
+The AAR is deliberately not committed here — it is ~36 MB and would go stale the
+moment a new SDK build ships. Always take it from releases so you get the current
+one.
 
 Permissions are merged in from the plugin. Nosmai licence keys are bound to your
 `applicationId`, so set it to the id your key was issued for.

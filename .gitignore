@@ -117,3 +117,6 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+# The Nosmai SDK AAR is downloaded from releases, not committed:
+#   https://github.com/nosmai/camera-sdk-android/releases
+*.aar
